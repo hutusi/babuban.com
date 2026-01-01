@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Clock, Star, Film, Calendar } from "lucide-react";
-import { movies } from "@/lib/movies";
+import { getMovieById } from "@/lib/movies";
 import { NavBar } from "@/components/NavBar";
 
 // In Next.js 15+ (and 16), params are promises in async components
@@ -12,7 +12,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
-  const movie = movies.find((m) => m.id === id);
+  const movie = await getMovieById(id);
   
   if (!movie) {
     return { title: "Movie Not Found" };
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function MoviePage({ params }: Props) {
   const { id } = await params;
-  const movie = movies.find((m) => m.id === id);
+  const movie = await getMovieById(id);
 
   if (!movie) {
     notFound();
@@ -115,7 +115,7 @@ export default async function MoviePage({ params }: Props) {
               <div>
                 <h3 className="text-amber-500 uppercase tracking-widest text-sm mb-4">Genres</h3>
                 <div className="flex flex-wrap gap-2">
-                  {movie.genre.map(g => (
+                  {movie.genres.map(g => (
                     <span key={g} className="px-3 py-1 bg-stone-900 border border-white/10 text-stone-300 text-sm">
                       {g}
                     </span>

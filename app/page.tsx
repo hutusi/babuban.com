@@ -1,11 +1,18 @@
 import { NavBar } from "@/components/NavBar";
 import { Hero } from "@/components/Hero";
 import { MovieCard } from "@/components/MovieCard";
-import { movies } from "@/lib/movies";
+import { getMovies } from "@/lib/movies";
 
-export default function Home() {
-  const featuredMovie = movies[0]; // 8 ½
-  const collection = movies.slice(1);
+export const revalidate = 60; // ISR: Revalidate every 60 seconds
+
+export default async function Home() {
+  const movies = await getMovies();
+  
+  // Sort manually if needed or rely on DB order. 
+  // Let's ensure 8 1/2 is featured if it exists, otherwise first one.
+  const featuredId = "8-1-2";
+  const featuredMovie = movies.find(m => m.id === featuredId) || movies[0];
+  const collection = movies.filter(m => m.id !== featuredMovie.id);
 
   return (
     <main className="min-h-screen bg-stone-950 text-stone-100">
