@@ -1,6 +1,6 @@
 import { db } from "@/db/index";
 import { directors, movies } from "@/db/schema";
-import { eq, like, or } from "drizzle-orm";
+import { eq, like, or, and, gte, lte } from "drizzle-orm";
 import type { DirectorWithMovies, MovieWithDirector } from "./types";
 
 export async function getMovies(
@@ -140,3 +140,41 @@ export async function getAllGenres(): Promise<string[]> {
 	);
 	return Array.from(genres).sort();
 }
+
+export async function getMoviesByYearRange(
+	startYear: number,
+	endYear: number
+): Promise<MovieWithDirector[]> {
+	const rows = await db
+		.select({
+			movie: movies,
+			directorName: directors.name,
+		})
+		.from(movies)
+		.innerJoin(directors, eq(movies.directorId, directors.id))
+		.where(
+			and(gte(movies.year, startYear), lte(movies.year, endYear))
+		)
+		.orderBy(movies.year);
+
+	return rows.map((r) => ({
+		...r.movie,
+		directorName: r.directorName,
+	}));
+}
+
+export async function getAllCountries(): Promise<string[]> {
+	const rows = await db
+		.selectDistinct({ country: movies.country })
+		.from(movies)
+		.orderBy(movies.country);
+	return rows.map((r) => r.country);
+}
+
+export async function getAllDecades(): Promise<number[]> {
+	const allMovies = await db.select({ year: movies.year }).from(movies);
+	const decades = new Set<number>();
+	allMovies.forEach((m) => decades.add(Math.floor(m.year / 10) * 10));
+	return Array.from(decades).sort();
+}
+
