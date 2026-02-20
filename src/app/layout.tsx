@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import PageTransition from "@/components/page-transition";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,10 +16,29 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "8½ Classics — A Curated Cinema Archive",
+  title: {
+    default: "8½ Classics — A Curated Cinema Archive",
+    template: "%s | 8½ Classics",
+  },
   description:
     "Celebrating the masterpieces and visionaries that shaped the art of cinema. Explore films from Fellini, Kurosawa, Bergman, Tarkovsky, and more.",
-  keywords: ["cinema", "classic films", "directors", "Fellini", "Kurosawa", "film archive"],
+  keywords: [
+    "cinema",
+    "classic films",
+    "directors",
+    "Fellini",
+    "Kurosawa",
+    "film archive",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: "8½ Classics",
+    locale: "en_US",
+    title: "8½ Classics — A Curated Cinema Archive",
+    description:
+      "Celebrating the masterpieces and visionaries that shaped the art of cinema.",
+  },
+  metadataBase: new URL("https://babuban.com"),
 };
 
 export default function RootLayout({
@@ -32,7 +52,9 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
         <Header />
-        <main className="pt-[73px]">{children}</main>
+        <main className="pt-[73px]">
+          <PageTransition>{children}</PageTransition>
+        </main>
         <Footer />
       </body>
     </html>

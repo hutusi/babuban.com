@@ -1,8 +1,10 @@
 import { Film, Heart, Eye, Award } from "lucide-react";
+import { getStats } from "@/lib/queries";
 
 export const metadata = {
 	title: "About — 8½ Classics",
-	description: "Learn about the mission behind 8½ Classics — a curated archive celebrating cinema's greatest achievements.",
+	description:
+		"Learn about the mission behind 8½ Classics — a curated archive celebrating cinema's greatest achievements.",
 };
 
 const values = [
@@ -32,14 +34,17 @@ const values = [
 	},
 ];
 
-const stats = [
-	{ label: "Directors", value: "8" },
-	{ label: "Films", value: "16" },
-	{ label: "Countries", value: "7" },
-	{ label: "Decades", value: "4" },
-];
+export default async function AboutPage() {
+	const { directorCount, movieCount, countryCount, decadeCount } =
+		await getStats();
 
-export default function AboutPage() {
+	const stats = [
+		{ label: "Directors", value: directorCount.toString() },
+		{ label: "Films", value: movieCount.toString() },
+		{ label: "Countries", value: countryCount.toString() },
+		{ label: "Decades", value: decadeCount.toString() },
+	];
+
 	return (
 		<section className="mx-auto max-w-5xl px-6 py-16">
 			{/* Header */}
@@ -59,25 +64,27 @@ export default function AboutPage() {
 				<h2 className="mb-4 font-serif text-2xl font-bold text-foreground">
 					The Story
 				</h2>
-				<div className="space-y-4 text-muted-foreground leading-relaxed">
+				<div className="space-y-4 leading-relaxed text-muted-foreground">
 					<p>
-						Cinema is more than moving pictures — it is humanity&apos;s collective
-						dream, captured frame by frame. From the sun-drenched piazzas of
-						Fellini&apos;s Rome to the rain-soaked forests of Kurosawa&apos;s
-						medieval Japan, the films in our collection represent the pinnacle of visual
-						storytelling.
+						Cinema is more than moving pictures — it is humanity&apos;s
+						collective dream, captured frame by frame. From the sun-drenched
+						piazzas of Fellini&apos;s Rome to the rain-soaked forests of
+						Kurosawa&apos;s medieval Japan, the films in our collection
+						represent the pinnacle of visual storytelling.
 					</p>
 					<p>
 						8½ Classics began as a personal project — a way to organize and
-						celebrate the films that have shaped our understanding of what cinema
-						can be. It grew into something more: a curated space where film
-						lovers can explore the works of the greatest directors in history.
+						celebrate the films that have shaped our understanding of what
+						cinema can be. It grew into something more: a curated space where
+						film lovers can explore the works of the greatest directors in
+						history.
 					</p>
 					<p>
-						Each entry in our archive is accompanied by context — the historical
-						moment that birthed it, the director&apos;s vision, and the lasting
-						impact it has had on the art form. We believe that understanding a
-						film&apos;s origins deepens the experience of watching it.
+						Each entry in our archive is accompanied by context — the
+						historical moment that birthed it, the director&apos;s vision, and
+						the lasting impact it has had on the art form. We believe that
+						understanding a film&apos;s origins deepens the experience of
+						watching it.
 					</p>
 				</div>
 			</div>
@@ -116,7 +123,9 @@ export default function AboutPage() {
 					{stats.map((stat) => (
 						<div key={stat.label} className="text-center">
 							<p className="gold-gradient text-4xl font-bold">{stat.value}</p>
-							<p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
+							<p className="mt-1 text-sm text-muted-foreground">
+								{stat.label}
+							</p>
 						</div>
 					))}
 				</div>

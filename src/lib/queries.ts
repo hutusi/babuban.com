@@ -178,3 +178,24 @@ export async function getAllDecades(): Promise<number[]> {
 	return Array.from(decades).sort();
 }
 
+export async function getStats(): Promise<{
+	directorCount: number;
+	movieCount: number;
+	countryCount: number;
+	decadeCount: number;
+}> {
+	const [allDirectors, allMovies] = await Promise.all([
+		db.select().from(directors),
+		db.select().from(movies),
+	]);
+
+	const countries = new Set(allMovies.map((m) => m.country));
+	const decades = new Set(allMovies.map((m) => Math.floor(m.year / 10) * 10));
+
+	return {
+		directorCount: allDirectors.length,
+		movieCount: allMovies.length,
+		countryCount: countries.size,
+		decadeCount: decades.size,
+	};
+}
