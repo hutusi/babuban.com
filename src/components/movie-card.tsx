@@ -3,10 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Movie } from "@/lib/types";
+import { MovieWithDirector } from "@/lib/types";
 
 interface MovieCardProps {
-	movie: Movie;
+	movie: MovieWithDirector;
 	index: number;
 }
 
@@ -42,7 +42,7 @@ export default function MovieCard({ movie, index }: MovieCardProps) {
 					{/* Bottom info */}
 					<div className="absolute right-0 bottom-0 left-0 p-4">
 						<div className="mb-1 flex flex-wrap gap-1.5">
-							{movie.genre.slice(0, 2).map((g) => (
+							{(movie.genre as string[]).slice(0, 2).map((g: string) => (
 								<span
 									key={g}
 									className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] font-medium text-gold"

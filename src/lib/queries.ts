@@ -1,51 +1,142 @@
-import { directors, movies } from "./data";
-import { Director, Movie } from "./types";
+import { db } from "@/db/index";
+import { directors, movies } from "@/db/schema";
+import { eq, like, or } from "drizzle-orm";
+import type { DirectorWithMovies, MovieWithDirector } from "./types";
 
-export async function getMovies(search?: string, genre?: string): Promise<Movie[]> {
-	let result = [...movies];
+export async function getMovies(
+	search?: string,
+	genre?: string
+): Promise<MovieWithDirector[]> {
+	let rows;
+
 	if (search) {
-		const q = search.toLowerCase();
-		result = result.filter(
-			(m) =>
-				m.title.toLowerCase().includes(q) ||
-				m.directorName.toLowerCase().includes(q)
-		);
+		const pattern = `%${search}%`;
+		rows = await db
+			.select({
+				movie: movies,
+				directorName: directors.name,
+			})
+			.from(movies)
+			.innerJoin(directors, eq(movies.directorId, directors.id))
+			.where(
+				or(like(movies.title, pattern), like(directors.name, pattern))
+			);
+	} else {
+		rows = await db
+			.select({
+				movie: movies,
+				directorName: directors.name,
+			})
+			.from(movies)
+			.innerJoin(directors, eq(movies.directorId, directors.id));
 	}
+
+	let result = rows.map((r) => ({
+		...r.movie,
+		directorName: r.directorName,
+	}));
+
 	if (genre) {
 		result = result.filter((m) =>
-			m.genre.some((g) => g.toLowerCase() === genre.toLowerCase())
+			(m.genre as string[]).some(
+				(g) => g.toLowerCase() === genre.toLowerCase()
+			)
 		);
 	}
+
 	return result;
 }
 
-export async function getMovie(id: string): Promise<Movie | undefined> {
-	return movies.find((m) => m.id === id);
+export async function getMovie(
+	id: string
+): Promise<MovieWithDirector | undefined> {
+	const rows = await db
+		.select({
+			movie: movies,
+			directorName: directors.name,
+		})
+		.from(movies)
+		.innerJoin(directors, eq(movies.directorId, directors.id))
+		.where(eq(movies.id, id))
+		.limit(1);
+
+	if (rows.length === 0) return undefined;
+	return { ...rows[0].movie, directorName: rows[0].directorName };
 }
 
-export async function getDirectors(search?: string): Promise<Director[]> {
-	let result = [...directors];
+export async function getDirectors(
+	search?: string
+): Promise<DirectorWithMovies[]> {
+	let directorRows;
+
 	if (search) {
-		const q = search.toLowerCase();
-		result = result.filter(
-			(d) =>
-				d.name.toLowerCase().includes(q) ||
-				d.nationality.toLowerCase().includes(q)
-		);
+		const pattern = `%${search}%`;
+		directorRows = await db
+			.select()
+			.from(directors)
+			.where(
+				or(like(directors.name, pattern), like(directors.nationality, pattern))
+			);
+	} else {
+		directorRows = await db.select().from(directors);
 	}
-	return result;
+
+	// Fetch notable movies for each director
+	const allMovies = await db.select().from(movies);
+	return directorRows.map((d) => ({
+		...d,
+		notableMovies: allMovies
+			.filter((m) => m.directorId === d.id)
+			.slice(0, 3)
+			.map((m) => m.title),
+	}));
 }
 
-export async function getDirector(id: string): Promise<Director | undefined> {
-	return directors.find((d) => d.id === id);
+export async function getDirector(
+	id: string
+): Promise<DirectorWithMovies | undefined> {
+	const rows = await db
+		.select()
+		.from(directors)
+		.where(eq(directors.id, id))
+		.limit(1);
+
+	if (rows.length === 0) return undefined;
+
+	const directorMovies = await db
+		.select()
+		.from(movies)
+		.where(eq(movies.directorId, id));
+
+	return {
+		...rows[0],
+		notableMovies: directorMovies.slice(0, 3).map((m) => m.title),
+	};
 }
 
-export async function getMoviesByDirector(directorId: string): Promise<Movie[]> {
-	return movies.filter((m) => m.directorId === directorId);
+export async function getMoviesByDirector(
+	directorId: string
+): Promise<MovieWithDirector[]> {
+	const rows = await db
+		.select({
+			movie: movies,
+			directorName: directors.name,
+		})
+		.from(movies)
+		.innerJoin(directors, eq(movies.directorId, directors.id))
+		.where(eq(movies.directorId, directorId));
+
+	return rows.map((r) => ({
+		...r.movie,
+		directorName: r.directorName,
+	}));
 }
 
-export function getAllGenres(): string[] {
+export async function getAllGenres(): Promise<string[]> {
+	const allMovies = await db.select({ genre: movies.genre }).from(movies);
 	const genres = new Set<string>();
-	movies.forEach((m) => m.genre.forEach((g) => genres.add(g)));
+	allMovies.forEach((m) =>
+		(m.genre as string[]).forEach((g) => genres.add(g))
+	);
 	return Array.from(genres).sort();
 }

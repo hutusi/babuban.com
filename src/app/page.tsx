@@ -4,7 +4,7 @@ import { getMovies, getAllGenres } from "@/lib/queries";
 
 export default async function HomePage() {
   const movies = await getMovies();
-  const genres = getAllGenres();
+  const genres = await getAllGenres();
 
   return (
     <>

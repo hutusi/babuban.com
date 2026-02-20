@@ -1,25 +1,15 @@
-export interface Director {
-  id: string;
-  name: string;
-  birthYear: number;
-  deathYear?: number;
-  nationality: string;
-  biography: string;
-  photoUrl: string;
-  notableMovies: string[];
-}
+import { InferSelectModel } from "drizzle-orm";
+import { directors, movies } from "@/db/schema";
 
-export interface Movie {
-  id: string;
-  title: string;
-  year: number;
-  directorId: string;
+export type Director = InferSelectModel<typeof directors>;
+export type Movie = InferSelectModel<typeof movies>;
+
+/** Director with computed fields for display */
+export type DirectorWithMovies = Director & {
+  notableMovies: string[];
+};
+
+/** Movie with computed director name for display */
+export type MovieWithDirector = Movie & {
   directorName: string;
-  genre: string[];
-  synopsis: string;
-  posterUrl: string;
-  runtime: number; // minutes
-  rating?: number; // IMDb-style 1-10
-  language: string;
-  country: string;
-}
+};

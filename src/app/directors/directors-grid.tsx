@@ -5,10 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
-import { Director } from "@/lib/types";
+import { DirectorWithMovies } from "@/lib/types";
 
 interface DirectorsGridProps {
-	directors: Director[];
+	directors: DirectorWithMovies[];
 }
 
 export default function DirectorsGrid({ directors }: DirectorsGridProps) {
@@ -83,7 +83,7 @@ export default function DirectorsGrid({ directors }: DirectorsGridProps) {
 										{director.name}
 									</h3>
 									<div className="flex flex-wrap gap-1.5">
-										{director.notableMovies.slice(0, 3).map((movie) => (
+										{director.notableMovies.slice(0, 3).map((movie: string) => (
 											<span
 												key={movie}
 												className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] font-medium text-gold/80"

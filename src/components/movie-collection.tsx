@@ -3,10 +3,10 @@
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import MovieCard from "./movie-card";
-import { Movie } from "@/lib/types";
+import { MovieWithDirector } from "@/lib/types";
 
 interface MovieCollectionProps {
-	movies: Movie[];
+	movies: MovieWithDirector[];
 	genres: string[];
 }
 
@@ -26,7 +26,7 @@ export default function MovieCollection({ movies, genres }: MovieCollectionProps
 		}
 		if (selectedGenre) {
 			result = result.filter((m) =>
-				m.genre.some((g) => g === selectedGenre)
+				(m.genre as string[]).some((g: string) => g === selectedGenre)
 			);
 		}
 		return result;
@@ -63,8 +63,8 @@ export default function MovieCollection({ movies, genres }: MovieCollectionProps
 					<button
 						onClick={() => setSelectedGenre(null)}
 						className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${!selectedGenre
-								? "bg-gold text-black"
-								: "border border-white/10 text-muted-foreground hover:text-foreground"
+							? "bg-gold text-black"
+							: "border border-white/10 text-muted-foreground hover:text-foreground"
 							}`}
 					>
 						All
@@ -76,8 +76,8 @@ export default function MovieCollection({ movies, genres }: MovieCollectionProps
 								setSelectedGenre(selectedGenre === genre ? null : genre)
 							}
 							className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${selectedGenre === genre
-									? "bg-gold text-black"
-									: "border border-white/10 text-muted-foreground hover:text-foreground"
+								? "bg-gold text-black"
+								: "border border-white/10 text-muted-foreground hover:text-foreground"
 								}`}
 						>
 							{genre}

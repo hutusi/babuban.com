@@ -1,6 +1,7 @@
-import { Director, Movie } from "./types";
+import { db } from "./bun-db";
+import { directors, movies } from "./schema";
 
-export const directors: Director[] = [
+const directorsData = [
 	{
 		id: "fellini",
 		name: "Federico Fellini",
@@ -10,7 +11,6 @@ export const directors: Director[] = [
 		biography:
 			"Federico Fellini was an Italian film director and screenwriter known for his distinct style blending fantasy and baroque imagery. He is recognized as one of the greatest and most influential filmmakers of all time, winning four Academy Awards for Best Foreign Language Film.",
 		photoUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&h=500&fit=crop",
-		notableMovies: ["La Dolce Vita", "8½", "Amarcord"],
 	},
 	{
 		id: "kurosawa",
@@ -21,7 +21,6 @@ export const directors: Director[] = [
 		biography:
 			"Akira Kurosawa was a Japanese filmmaker and painter who directed 30 films in a career spanning 57 years. He is regarded as one of the most important and influential filmmakers in cinema history, known for his bold visual style and humanistic themes.",
 		photoUrl: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&h=500&fit=crop",
-		notableMovies: ["Seven Samurai", "Rashomon", "Ikiru"],
 	},
 	{
 		id: "bergman",
@@ -32,7 +31,6 @@ export const directors: Director[] = [
 		biography:
 			"Ernst Ingmar Bergman was a Swedish film and theatre director, writer, and producer. He is considered one of the most accomplished and influential filmmakers of all time, exploring themes of mortality, faith, and the human psyche.",
 		photoUrl: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&h=500&fit=crop",
-		notableMovies: ["The Seventh Seal", "Persona", "Wild Strawberries"],
 	},
 	{
 		id: "tarkovsky",
@@ -43,7 +41,6 @@ export const directors: Director[] = [
 		biography:
 			"Andrei Arsenyevich Tarkovsky was a Soviet filmmaker, theatre director, writer, and film theorist. He is widely considered one of the greatest directors in film history, known for his poetic and metaphysical approach to cinema.",
 		photoUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=500&fit=crop",
-		notableMovies: ["Stalker", "Solaris", "Mirror"],
 	},
 	{
 		id: "godard",
@@ -54,7 +51,6 @@ export const directors: Director[] = [
 		biography:
 			"Jean-Luc Godard was a French-Swiss film director, screenwriter, and film critic. He was a pioneer of the French New Wave, challenging conventions of traditional Hollywood cinema with innovative narrative structures and visual techniques.",
 		photoUrl: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=500&fit=crop",
-		notableMovies: ["Breathless", "Contempt", "Pierrot le Fou"],
 	},
 	{
 		id: "kubrick",
@@ -65,7 +61,6 @@ export const directors: Director[] = [
 		biography:
 			"Stanley Kubrick was an American-born British film director, screenwriter, and producer. He is frequently cited as one of the greatest filmmakers of all time, known for his meticulous perfectionism, innovative cinematography, and wide-ranging genre work.",
 		photoUrl: "https://images.unsplash.com/photo-1518676590747-1e3dcf5a3aaf?w=400&h=500&fit=crop",
-		notableMovies: ["2001: A Space Odyssey", "A Clockwork Orange", "The Shining"],
 	},
 	{
 		id: "hitchcock",
@@ -76,7 +71,6 @@ export const directors: Director[] = [
 		biography:
 			'Sir Alfred Joseph Hitchcock was a British-American film director and producer, widely regarded as one of the most influential figures in the history of cinema. Known as the "Master of Suspense," he directed more than 50 feature films.',
 		photoUrl: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=400&h=500&fit=crop",
-		notableMovies: ["Vertigo", "Psycho", "Rear Window"],
 	},
 	{
 		id: "ozu",
@@ -87,17 +81,15 @@ export const directors: Director[] = [
 		biography:
 			"Yasujirō Ozu was a Japanese film director and screenwriter. He is regarded as one of the most influential directors in the history of cinema, known for his distinctive low-angle shots and contemplative explorations of family dynamics.",
 		photoUrl: "https://images.unsplash.com/photo-1460881680858-30d872d5b530?w=400&h=500&fit=crop",
-		notableMovies: ["Tokyo Story", "Late Spring", "An Autumn Afternoon"],
 	},
 ];
 
-export const movies: Movie[] = [
+const moviesData = [
 	{
 		id: "la-dolce-vita",
 		title: "La Dolce Vita",
 		year: 1960,
 		directorId: "fellini",
-		directorName: "Federico Fellini",
 		genre: ["Drama", "Comedy"],
 		synopsis:
 			"A journalist explores Rome's decadent high society in this sprawling episodic masterpiece that examines the search for meaning in a world of excess and spectacle.",
@@ -112,7 +104,6 @@ export const movies: Movie[] = [
 		title: "8½",
 		year: 1963,
 		directorId: "fellini",
-		directorName: "Federico Fellini",
 		genre: ["Drama", "Fantasy"],
 		synopsis:
 			"A harried Italian film director struggles to find creative inspiration amidst personal turmoil, blending reality and fantasy in this groundbreaking exploration of the artistic process.",
@@ -127,7 +118,6 @@ export const movies: Movie[] = [
 		title: "Seven Samurai",
 		year: 1954,
 		directorId: "kurosawa",
-		directorName: "Akira Kurosawa",
 		genre: ["Action", "Drama"],
 		synopsis:
 			"A poor village hires seven samurai to protect them from bandits in this epic, influential masterpiece that defined the modern action film and ensemble storytelling.",
@@ -142,7 +132,6 @@ export const movies: Movie[] = [
 		title: "Rashomon",
 		year: 1950,
 		directorId: "kurosawa",
-		directorName: "Akira Kurosawa",
 		genre: ["Crime", "Drama", "Mystery"],
 		synopsis:
 			"The rape of a bride and the murder of her samurai husband are recalled from the perspectives of a bandit, the bride, the samurai's ghost, and a woodcutter, questioning the nature of truth itself.",
@@ -157,7 +146,6 @@ export const movies: Movie[] = [
 		title: "The Seventh Seal",
 		year: 1957,
 		directorId: "bergman",
-		directorName: "Ingmar Bergman",
 		genre: ["Drama", "Fantasy"],
 		synopsis:
 			"A medieval knight returning from the Crusades plays a game of chess with Death while seeking answers about life, death, and the existence of God.",
@@ -172,7 +160,6 @@ export const movies: Movie[] = [
 		title: "Persona",
 		year: 1966,
 		directorId: "bergman",
-		directorName: "Ingmar Bergman",
 		genre: ["Drama", "Thriller"],
 		synopsis:
 			"A nurse is put in charge of a mute actress and finds that their personalities begin to merge in this psychologically intense examination of identity and the nature of performance.",
@@ -187,7 +174,6 @@ export const movies: Movie[] = [
 		title: "Stalker",
 		year: 1979,
 		directorId: "tarkovsky",
-		directorName: "Andrei Tarkovsky",
 		genre: ["Drama", "Sci-Fi"],
 		synopsis:
 			"A guide leads a writer and a professor through the Zone, a mysterious restricted area where the innermost desires of a person are said to come true, in this profound meditation on faith and human longing.",
@@ -202,7 +188,6 @@ export const movies: Movie[] = [
 		title: "Solaris",
 		year: 1972,
 		directorId: "tarkovsky",
-		directorName: "Andrei Tarkovsky",
 		genre: ["Drama", "Mystery", "Sci-Fi"],
 		synopsis:
 			"A psychologist is sent to a space station orbiting a mysterious planet that manifests physical embodiments of visitors' deepest memories, confronting the limits of human understanding.",
@@ -217,7 +202,6 @@ export const movies: Movie[] = [
 		title: "Breathless",
 		year: 1960,
 		directorId: "godard",
-		directorName: "Jean-Luc Godard",
 		genre: ["Crime", "Drama"],
 		synopsis:
 			"A small-time thief who models himself on Humphrey Bogart steals a car and kills a policeman, then persuades a young American journalist to hide with him in Paris in this revolutionary New Wave classic.",
@@ -232,7 +216,6 @@ export const movies: Movie[] = [
 		title: "Contempt",
 		year: 1963,
 		directorId: "godard",
-		directorName: "Jean-Luc Godard",
 		genre: ["Drama"],
 		synopsis:
 			"A screenwriter is hired to rework a script for a film adaptation of Homer's Odyssey, while his marriage begins to disintegrate in this gorgeous meditation on cinema, art, and relationships.",
@@ -247,7 +230,6 @@ export const movies: Movie[] = [
 		title: "2001: A Space Odyssey",
 		year: 1968,
 		directorId: "kubrick",
-		directorName: "Stanley Kubrick",
 		genre: ["Sci-Fi", "Adventure"],
 		synopsis:
 			"After discovering a mysterious artifact buried beneath the lunar surface, humanity sets off on a quest to find its origins with help from HAL 9000, the world's most advanced supercomputer.",
@@ -262,7 +244,6 @@ export const movies: Movie[] = [
 		title: "A Clockwork Orange",
 		year: 1971,
 		directorId: "kubrick",
-		directorName: "Stanley Kubrick",
 		genre: ["Crime", "Sci-Fi"],
 		synopsis:
 			"In a dystopian future, a sadistic gang leader is imprisoned and volunteers for a conduct-aversion experiment, raising questions about free will, morality, and the nature of evil.",
@@ -277,7 +258,6 @@ export const movies: Movie[] = [
 		title: "Vertigo",
 		year: 1958,
 		directorId: "hitchcock",
-		directorName: "Alfred Hitchcock",
 		genre: ["Mystery", "Romance", "Thriller"],
 		synopsis:
 			"A former San Francisco police detective juggles his fear of heights and an obsessive fascination with a beautiful woman in this hypnotic exploration of obsession and identity.",
@@ -292,7 +272,6 @@ export const movies: Movie[] = [
 		title: "Psycho",
 		year: 1960,
 		directorId: "hitchcock",
-		directorName: "Alfred Hitchcock",
 		genre: ["Horror", "Mystery", "Thriller"],
 		synopsis:
 			"A secretary on the run checks into a remote motel run by a young man under the domination of his mother in this groundbreaking thriller that redefined the horror genre.",
@@ -307,7 +286,6 @@ export const movies: Movie[] = [
 		title: "Tokyo Story",
 		year: 1953,
 		directorId: "ozu",
-		directorName: "Yasujirō Ozu",
 		genre: ["Drama"],
 		synopsis:
 			"An aging couple visits their grown children in Tokyo, only to find them too busy to spend time with their parents, in this quietly devastating masterpiece about family, generational change, and loneliness.",
@@ -322,7 +300,6 @@ export const movies: Movie[] = [
 		title: "Late Spring",
 		year: 1949,
 		directorId: "ozu",
-		directorName: "Yasujirō Ozu",
 		genre: ["Drama"],
 		synopsis:
 			"A widowed father feels compelled to fabricate a story about remarrying in order to encourage his devoted daughter to wed in this tender exploration of the bonds between parent and child.",
@@ -333,3 +310,27 @@ export const movies: Movie[] = [
 		country: "Japan",
 	},
 ];
+
+async function seed() {
+	console.log("🌱 Seeding database...");
+
+	// Clear existing data
+	db.delete(movies).run();
+	db.delete(directors).run();
+
+	// Insert directors
+	for (const director of directorsData) {
+		db.insert(directors).values(director).run();
+	}
+	console.log(`  ✓ Inserted ${directorsData.length} directors`);
+
+	// Insert movies
+	for (const movie of moviesData) {
+		db.insert(movies).values(movie).run();
+	}
+	console.log(`  ✓ Inserted ${moviesData.length} movies`);
+
+	console.log("✅ Seeding complete!");
+}
+
+seed();
