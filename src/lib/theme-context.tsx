@@ -3,8 +3,9 @@
 import {
 	createContext,
 	useContext,
+	useState,
+	useEffect,
 	useCallback,
-	useSyncExternalStore,
 	type ReactNode,
 } from "react";
 
@@ -22,7 +23,8 @@ const ThemeContext = createContext<ThemeContextType>({
 
 const STORAGE_KEY = "babuban-theme";
 
-function getStoredTheme(): Theme {
+function readTheme(): Theme {
+	if (typeof window === "undefined") return "dark";
 	try {
 		const stored = localStorage.getItem(STORAGE_KEY);
 		if (stored === "light" || stored === "dark") return stored;
@@ -30,29 +32,18 @@ function getStoredTheme(): Theme {
 	return "dark";
 }
 
-function subscribe(callback: () => void) {
-	window.addEventListener("storage", callback);
-	return () => window.removeEventListener("storage", callback);
-}
-
-function getServerSnapshot(): Theme {
-	return "dark";
-}
-
 export function ThemeProvider({ children }: { children: ReactNode }) {
-	const theme = useSyncExternalStore(subscribe, getStoredTheme, getServerSnapshot);
+	// Lazy initializer — runs once on mount
+	const [theme, setTheme] = useState<Theme>(readTheme);
 
-	// Keep the HTML class in sync
-	if (typeof document !== "undefined") {
+	// Side-effect: keep HTML class and localStorage in sync
+	useEffect(() => {
 		document.documentElement.classList.toggle("dark", theme === "dark");
-	}
+		localStorage.setItem(STORAGE_KEY, theme);
+	}, [theme]);
 
 	const toggleTheme = useCallback(() => {
-		const next = getStoredTheme() === "dark" ? "light" : "dark";
-		localStorage.setItem(STORAGE_KEY, next);
-		document.documentElement.classList.toggle("dark", next === "dark");
-		// Trigger useSyncExternalStore re-read
-		window.dispatchEvent(new StorageEvent("storage"));
+		setTheme((prev) => (prev === "dark" ? "light" : "dark"));
 	}, []);
 
 	return (

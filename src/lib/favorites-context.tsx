@@ -6,7 +6,6 @@ import {
 	useState,
 	useEffect,
 	useCallback,
-	useSyncExternalStore,
 	type ReactNode,
 } from "react";
 
@@ -24,7 +23,8 @@ const FavoritesContext = createContext<FavoritesContextType>({
 
 const STORAGE_KEY = "babuban-favorites";
 
-function getStoredFavorites(): string[] {
+function readFavorites(): string[] {
+	if (typeof window === "undefined") return [];
 	try {
 		const stored = localStorage.getItem(STORAGE_KEY);
 		return stored ? JSON.parse(stored) : [];
@@ -33,17 +33,11 @@ function getStoredFavorites(): string[] {
 	}
 }
 
-function subscribe(callback: () => void) {
-	window.addEventListener("storage", callback);
-	return () => window.removeEventListener("storage", callback);
-}
-
 export function FavoritesProvider({ children }: { children: ReactNode }) {
-	const serverSnapshot = useCallback(() => [] as string[], []);
-	const stored = useSyncExternalStore(subscribe, getStoredFavorites, serverSnapshot);
-	const [favorites, setFavorites] = useState<string[]>(stored);
+	// Lazy initializer — runs once on mount, no setState-in-effect needed
+	const [favorites, setFavorites] = useState<string[]>(readFavorites);
 
-	// Sync to localStorage whenever favorites change
+	// Write-only effect: persist changes to localStorage
 	useEffect(() => {
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
 	}, [favorites]);
