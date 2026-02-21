@@ -14,6 +14,20 @@
   --card-hover: hsl(0 0% 12%);
 }
 
+/* ── Light Theme ──────────────────────────────────────── */
+html:not(.dark) {
+  --background: hsl(40 20% 97%);
+  --foreground: hsl(0 0% 12%);
+  --muted: hsl(40 10% 90%);
+  --muted-foreground: hsl(0 0% 45%);
+  --border: hsl(40 10% 85%);
+  --gold: hsl(43 74% 42%);
+  --gold-light: hsl(43 74% 55%);
+  --gold-dark: hsl(43 74% 30%);
+  --card: hsl(0 0% 100%);
+  --card-hover: hsl(40 10% 96%);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

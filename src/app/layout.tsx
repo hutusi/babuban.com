@@ -3,6 +3,8 @@ import { Inter, Playfair_Display } from "next/font/google";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import PageTransition from "@/components/page-transition";
+import { FavoritesProvider } from "@/lib/favorites-context";
+import { ThemeProvider } from "@/lib/theme-context";
 import "./globals.css";
 
 const inter = Inter({
@@ -51,14 +53,18 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
-        <a href="#main-content" className="skip-link">
-          Skip to content
-        </a>
-        <Header />
-        <main id="main-content" className="pt-[73px]">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <Footer />
+        <ThemeProvider>
+          <FavoritesProvider>
+            <a href="#main-content" className="skip-link">
+              Skip to content
+            </a>
+            <Header />
+            <main id="main-content" className="pt-[73px]">
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <Footer />
+          </FavoritesProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

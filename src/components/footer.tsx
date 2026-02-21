@@ -55,6 +55,12 @@ export default function Footer() {
 								Eras
 							</Link>
 							<Link
+								href="/favorites"
+								className="text-sm text-muted-foreground transition-colors hover:text-gold"
+							>
+								Favorites
+							</Link>
+							<Link
 								href="/about"
 								className="text-sm text-muted-foreground transition-colors hover:text-gold"
 							>

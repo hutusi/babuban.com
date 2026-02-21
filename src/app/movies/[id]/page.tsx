@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Clock, Globe, Star, Film } from "lucide-react";
 import { getMovie, getMoviesByDirector } from "@/lib/queries";
+import FavoriteButton from "@/components/favorite-button";
 
 interface MovieDetailPageProps {
 	params: Promise<{ id: string }>;
@@ -76,6 +77,9 @@ export default async function MovieDetailPage({ params }: MovieDetailPageProps) 
 							className="object-cover"
 							priority
 						/>
+						<div className="absolute top-3 right-3 z-10">
+							<FavoriteButton movieId={movie.id} size="md" />
+						</div>
 					</div>
 
 					{/* Details */}
