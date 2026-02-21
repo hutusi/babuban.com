@@ -37,10 +37,22 @@ export default function Footer() {
 								Collection
 							</Link>
 							<Link
+								href="/movies"
+								className="text-sm text-muted-foreground transition-colors hover:text-gold"
+							>
+								Movies
+							</Link>
+							<Link
 								href="/directors"
 								className="text-sm text-muted-foreground transition-colors hover:text-gold"
 							>
 								Directors
+							</Link>
+							<Link
+								href="/eras"
+								className="text-sm text-muted-foreground transition-colors hover:text-gold"
+							>
+								Eras
 							</Link>
 							<Link
 								href="/about"

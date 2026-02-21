@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import PosterImage from "@/components/poster-image";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Clock, Globe, Star, Film } from "lucide-react";
@@ -67,7 +68,7 @@ export default async function MovieDetailPage({ params }: MovieDetailPageProps) 
 				<div className="mb-16 flex flex-col gap-10 md:flex-row md:items-start">
 					{/* Poster */}
 					<div className="card-glow relative aspect-[2/3] w-full max-w-sm shrink-0 overflow-hidden rounded-xl">
-						<Image
+						<PosterImage
 							src={movie.posterUrl}
 							alt={movie.title}
 							fill

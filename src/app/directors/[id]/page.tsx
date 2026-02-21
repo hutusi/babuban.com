@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import PosterImage from "@/components/poster-image";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, MapPin, Calendar } from "lucide-react";
@@ -63,7 +64,7 @@ export default async function DirectorDetailPage({ params }: DirectorDetailPageP
 				<div className="mb-12 flex flex-col gap-8 md:flex-row md:items-start">
 					{/* Photo */}
 					<div className="relative aspect-[3/4] w-full max-w-xs shrink-0 overflow-hidden rounded-xl">
-						<Image
+						<PosterImage
 							src={director.photoUrl}
 							alt={director.name}
 							fill

@@ -46,26 +46,27 @@ body {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--background);
 }
+
 ::-webkit-scrollbar-thumb {
   background: hsl(0 0% 25%);
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gold-dark);
 }
 
 /* ── Utility Classes ───────────────────────────────────── */
 .gold-gradient {
-  background: linear-gradient(
-    135deg,
-    var(--gold-dark) 0%,
-    var(--gold) 40%,
-    var(--gold-light) 60%,
-    var(--gold) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--gold-dark) 0%,
+      var(--gold) 40%,
+      var(--gold-light) 60%,
+      var(--gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -74,6 +75,7 @@ body {
 .film-grain {
   position: relative;
 }
+
 .film-grain::after {
   content: "";
   position: absolute;
@@ -85,16 +87,49 @@ body {
 }
 
 .spotlight {
-  background: radial-gradient(
-    ellipse 80% 60% at 50% 0%,
-    hsla(43, 74%, 49%, 0.08) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(ellipse 80% 60% at 50% 0%,
+      hsla(43, 74%, 49%, 0.08) 0%,
+      transparent 70%);
 }
 
 .card-glow {
   transition: box-shadow 0.3s ease;
 }
+
 .card-glow:hover {
   box-shadow: 0 0 30px -5px hsla(43, 74%, 49%, 0.2);
+}
+
+/* ── Accessibility ────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  height: auto;
+  padding: 12px 24px;
+  background: var(--gold);
+  color: black;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 9999px;
+  z-index: 100;
+  box-shadow: 0 4px 20px hsla(43, 74%, 49%, 0.3);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
 }

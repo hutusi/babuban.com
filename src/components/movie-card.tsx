@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import PosterImage from "./poster-image";
 import { motion } from "framer-motion";
 import { MovieWithDirector } from "@/lib/types";
 
@@ -24,7 +24,7 @@ export default function MovieCard({ movie, index }: MovieCardProps) {
 			>
 				{/* Poster */}
 				<div className="relative aspect-[2/3] overflow-hidden">
-					<Image
+					<PosterImage
 						src={movie.posterUrl}
 						alt={movie.title}
 						fill

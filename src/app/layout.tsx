@@ -51,8 +51,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
         <Header />
-        <main className="pt-[73px]">
+        <main id="main-content" className="pt-[73px]">
           <PageTransition>{children}</PageTransition>
         </main>
         <Footer />
