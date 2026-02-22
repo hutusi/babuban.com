@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Exclude better-sqlite3 from serverless bundles (it's only used in dev)
+  serverExternalPackages: ["better-sqlite3"],
 };
 
 export default nextConfig;

@@ -9,10 +9,12 @@
     "lint": "eslint",
     "db:push": "bun run src/db/migrate.ts",
     "db:seed": "bun run src/db/seed.ts",
+    "db:seed-pg": "bun run src/db/seed-pg.ts",
     "db:studio": "drizzle-kit studio",
     "test": "vitest run"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "better-sqlite3": "^12.6.2",
     "drizzle-orm": "^0.45.1",
     "framer-motion": "^12.34.2",
